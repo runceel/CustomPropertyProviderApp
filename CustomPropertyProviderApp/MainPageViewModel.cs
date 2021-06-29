@@ -17,12 +17,12 @@ namespace CustomPropertyProviderApp
 
     public class CustomPropertyProviderMainPageViewModel : ICustomPropertyProvider
     {
-        private Model _model = new Model { Guid = Guid.NewGuid().ToString() };
+        public Model Model { get; } = new Model { Guid = Guid.NewGuid().ToString() };
         public ICustomProperty GetCustomProperty(string name)
         {
-            if (name == nameof(Model.Guid))
+            if (name == nameof(CustomPropertyProviderApp.Model.Guid))
             {
-                return new GuidProperty(_model);
+                return new GuidProperty();
             }
             else
             {
@@ -47,21 +47,16 @@ namespace CustomPropertyProviderApp
 
     public class GuidProperty : ICustomProperty
     {
-        private readonly Model _model;
-
-        public GuidProperty(Model model)
-        {
-            _model = model;
-        }
-
         public object GetValue(object target)
         {
-            return _model.Guid;
+            var vm = (CustomPropertyProviderMainPageViewModel)target;
+            return vm.Model.Guid;
         }
 
         public void SetValue(object target, object value)
         {
-            _model.Guid = (string)value;
+            var vm = (CustomPropertyProviderMainPageViewModel)target;
+            vm.Model.Guid = (string)value;
         }
 
         public object GetIndexedValue(object target, object index) => throw new NotSupportedException();
